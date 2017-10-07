@@ -12,7 +12,7 @@ _db.read()   // load db file
 _db.write()  // in case of default, rewrite it
 
 // global endpoint
-export const db = () => db.getState()
+export const db = () => _db.getState()
 
 // setup endpoints
 import _capabilities from './capabilities'
