@@ -1,0 +1,31 @@
+{
+  "name": "hue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "default-gateway": "^2.6.1",
+    "express": "^4.15.4",
+    "express-handlebars": "^3.0.0",
+    "lowdb": "^1.0.0",
+    "morgan": "^1.9.0",
+    "pubsub-js": "^1.5.7",
+    "shortid": "^2.2.8",
+    "superagent": "^3.6.3",
+    "superagent-promise": "^1.1.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-stage-0": "^6.24.1"
+  },
+  "author": "Julien Barbay <barbay.julien@gmail.com> (http://github.com/ynk/)",
+  "license": "ISC"
+}
