@@ -1,12 +1,15 @@
-import shortid from 'shortid'
 import model from './model'
+
+const uid = db => (
+  db.get('scenes').keys().length + 1
+)
 
 export default db => ({
   get: () => db.get('scenes').value(),
   one: id => db.get('scenes').get(id).value(),
 
   create: data => {
-    const id = shortid.generate()
+    const id = uid()
 
     db.get('scenes')
       .set(id, Object.assign({}, model, data))

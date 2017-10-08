@@ -1,15 +1,18 @@
 import superagent from 'superagent'
 import pubsub from 'pubsub-js'
 
-import shortid from 'shortid'
 import model from './model'
+
+const uid = db => (
+  db.get('sensors').keys().length + 1
+)
 
 export default db => ({
   get: () => db.get('sensors').value(),
   one: id => db.get('sensors').get(id).value(),
 
   create: data => {
-    const id = shortid.generate()
+    const id = uid()
 
     db.get('sensors')
       .set(id, Object.assign({}, model, data))
@@ -21,12 +24,21 @@ export default db => ({
   beacon: timeout => {
     const token = pubsub.subscribe('discovery:sensor', (event, data) => {
       // call-in for linkage
-      superagent.get(`${data.url}/${data.chip}/link`)
+      const adapter = adapters(data.adapter)
 
-      // store in db
-      db.get('sensors')
-        .set(data.chip, Object.assign({}, model, data))
-        .write()
+      return adapter
+        .link(data)
+        .then(nodehue => {
+          if (nodehue === false)
+            return false
+
+          db.get('sensors')
+            .set(uid(), Object.assign({}, model, { nodehue }))
+            .write()
+
+          return true
+        })
+        .catch(() => false)
     })
 
     setTimeout(() => pubsub.unsubscribe(token), timeout)
@@ -56,23 +68,30 @@ export default db => ({
 
   delete: id => {
     if (!db.get('sensors').has(id).value())
-      return false
+      return Promise.resolve(false)
 
-    // get data
-    const { url, chip } = db
-      .get('sensors')
-      .get(id)
-      .value()
+    // get sensor data
+    const sensor = db
+          .get('sensors')
+          .get(id)
+          .value()
 
-    // TODO: make sure it's reachable (check for statuscode 200)
-    // call-in for unlinkage
-    superagent.get(`${url}/${chip}/unlink`)
+    // call-in for linkage
+    const adapter = adapters(sensor.nodehue.adapter)
 
-    // delete from db
-    db.get('sensors')
-      .unset(id)
-      .write()
+    return adapter
+      .unlink(sensor)
+      .then(success => {
+        if (success === false)
+          return false
 
-    return id
+        // delete from db
+        db.get('sensors')
+          .unset(id)
+          .write()
+
+        return true
+      })
+      .catch(() => false)
   }
 })

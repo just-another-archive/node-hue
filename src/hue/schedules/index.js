@@ -1,14 +1,17 @@
-import shortid from 'shortid'
 import model from './model'
 
+const uid = db => (
+  db.get('schedules').keys().length + 1
+)
+
 export default db => ({
-  get: () => db.get('groups').value(),
-  one: id => db.get('groups').get(id).value(),
+  get: () => db.get('schedules').value(),
+  one: id => db.get('schedules').get(id).value(),
 
   create: data => {
-    const id = shortid.generate()
+    const id = uid()
 
-    db.get('groups')
+    db.get('schedules')
       .set(id, Object.assign({}, model, data))
       .write()
 
@@ -16,10 +19,10 @@ export default db => ({
   },
 
   update: (id, data) => {
-    if (!db.get('groups').has(id).value())
+    if (!db.get('schedules').has(id).value())
       return false
 
-    db.get('groups')
+    db.get('schedules')
       .get(id)
       .assign(data)
       .write()
@@ -28,10 +31,10 @@ export default db => ({
   },
 
   delete: id => {
-    if (!db.get('groups').has(id).value())
+    if (!db.get('schedules').has(id).value())
       return false
 
-    db.get('groups')
+    db.get('schedules')
       .unset(id)
       .write()
 

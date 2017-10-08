@@ -1,17 +1,20 @@
 import superagent from 'superagent'
 import pubsub from 'pubsub-js'
 
-import shortid from 'shortid'
 import model from './model'
 
 import adapters from '../../adapters'
+
+const uid = db => (
+  db.get('lights').keys().length + 1
+)
 
 export default db => ({
   get: () => db.get('lights').value(),
   one: id => db.get('lights').get(id).value(),
 
   create: data => {
-    const id = shortid.generate()
+    const id = uid()
 
     db.get('lights')
       .set(id, Object.assign({}, model, data))
@@ -32,7 +35,7 @@ export default db => ({
             return false
 
           db.get('lights')
-            .set(data.id, Object.assign({}, model, { nodehue }))
+            .set(uid(), Object.assign({}, model, { nodehue }))
             .write()
 
           return true
