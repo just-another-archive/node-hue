@@ -10,6 +10,9 @@ That's it.
 I first stumbled on [marius motea's project](https://github.com/mariusmotea/diyHue) which sounded promising. After some time I realized its goal was not what i wanted to achieve, and didn't want to steer the project away from Marius' vision. Also, it was made in python, and i knew i could do better with my node skills.
 
 ### how
+Here's a drafted principle of how things work:
+![schematics](schematics.png)
+
 #### devices
 I personally use [Wemos D1 mini](https://wiki.wemos.cc/products:d1:d1_mini) because it's cheap and good enough for the use but I guess any esp8266 based chips would run too. I use it with [Neopixels](https://www.adafruit.com/product/1138), which is a ws2812 based led strip (again, lots of compatible ones out there).
 
