@@ -1,29 +1,27 @@
 import model from './model'
 
 const uid = db => (
-  db.get('schedules').keys().length + 1
+  db.keys().length + 1
 )
 
 export default db => ({
-  get: () => db.get('schedules').value(),
-  one: id => db.get('schedules').get(id).value(),
+  get: () => db.value(),
+  one: id => db.get(id).value(),
 
   create: data => {
-    const id = uid()
+    const id = uid(db)
 
-    db.get('schedules')
-      .set(id, Object.assign({}, model, data))
+    db.set(id, Object.assign({}, model, data))
       .write()
 
     return id
   },
 
   update: (id, data) => {
-    if (!db.get('schedules').has(id).value())
+    if (!db.has(id).value())
       return false
 
-    db.get('schedules')
-      .get(id)
+    db.get(id)
       .assign(data)
       .write()
 
@@ -31,11 +29,10 @@ export default db => ({
   },
 
   delete: id => {
-    if (!db.get('schedules').has(id).value())
+    if (!db.has(id).value())
       return false
 
-    db.get('schedules')
-      .unset(id)
+    db.unset(id)
       .write()
 
     return id

@@ -4,18 +4,17 @@ import pubsub from 'pubsub-js'
 import model from './model'
 
 const uid = db => (
-  db.get('sensors').keys().length + 1
+  db.keys().length + 1
 )
 
 export default db => ({
-  get: () => db.get('sensors').value(),
-  one: id => db.get('sensors').get(id).value(),
+  get: () => db.value(),
+  one: id => db.get(id).value(),
 
   create: data => {
-    const id = uid()
+    const id = uid(db)
 
-    db.get('sensors')
-      .set(id, Object.assign({}, model, data))
+    db.set(id, Object.assign({}, model, data))
       .write()
 
     return id
@@ -32,8 +31,7 @@ export default db => ({
           if (nodehue === false)
             return false
 
-          db.get('sensors')
-            .set(uid(), Object.assign({}, model, { nodehue }))
+          db.set(uid(db), Object.assign({}, model, { nodehue }))
             .write()
 
           return true
@@ -45,11 +43,10 @@ export default db => ({
   },
 
   rename: (id, { name }) => {
-    if (!db.get('sensors').has(id).value())
+    if (!db.has(id).value())
       return false
 
-    db.get('sensors')
-      .get(id)
+    db.get(id)
       .assign({ name })
       .write()
 
@@ -57,24 +54,20 @@ export default db => ({
   },
 
   state: (id, data) => {
-    if (!db.get('sensors').has(id).value())
+    if (!db.has(id).value())
       return false
 
-
-
+    // todo
 
     return true
   },
 
   delete: id => {
-    if (!db.get('sensors').has(id).value())
+    if (!db.has(id).value())
       return Promise.resolve(false)
 
     // get sensor data
-    const sensor = db
-          .get('sensors')
-          .get(id)
-          .value()
+    const sensor = db.get(id).value()
 
     // call-in for linkage
     const adapter = adapters(sensor.nodehue.adapter)
@@ -86,8 +79,7 @@ export default db => ({
           return false
 
         // delete from db
-        db.get('sensors')
-          .unset(id)
+        db.unset(id)
           .write()
 
         return true

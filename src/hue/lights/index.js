@@ -6,18 +6,17 @@ import model from './model'
 import adapters from '../../adapters'
 
 const uid = db => (
-  db.get('lights').keys().length + 1
+  db.keys().length + 1
 )
 
 export default db => ({
-  get: () => db.get('lights').value(),
-  one: id => db.get('lights').get(id).value(),
+  get: () => db.value(),
+  one: id => db.get(id).value(),
 
   create: data => {
-    const id = uid()
+    const id = uid(db)
 
-    db.get('lights')
-      .set(id, Object.assign({}, model, data))
+    db.set(id, Object.assign({}, model, data))
       .write()
 
     return id
@@ -26,16 +25,13 @@ export default db => ({
   beacon: timeout => {
     const token = pubsub.subscribe('discovery:light', (event, data) => {
       // call-in for linkage
-      const adapter = adapters(data.adapter)
-
-      return adapter
+      adapters(data.adapter)
         .link(data)
         .then(nodehue => {
           if (nodehue === false)
             return false
 
-          db.get('lights')
-            .set(uid(), Object.assign({}, model, { nodehue }))
+          db.set(uid(db), Object.assign({}, model, { nodehue }))
             .write()
 
           return true
@@ -44,52 +40,71 @@ export default db => ({
     })
 
     setTimeout(() => pubsub.unsubscribe(token), timeout)
+    return true
   },
 
   rename: (id, { name }) => {
-    if (!db.get('lights').has(id).value())
+    if (!db.has(id).value())
       return false
 
-    db.get('lights')
-      .get(id)
+    db.get(id)
       .assign({ name })
       .write()
 
     return true
   },
 
-  state: (id, data) => {
-    if (!db.get('lights').has(id).value())
+  state: (id, state) => {
+    if (!db.has(id).value())
       return false
 
+    if ('xy' in state)
+      data.colormode = 'xy'
+    else if ('ct' in state)
+      state.colormode = 'ct'
+    else if ('hs' in state)
+      state.colormode = 'hs'
 
+    // choose which adapter's method to call depending on properties
+    const method = !('on' in state) ? 'set'
+                 :  state.on ? 'on' : 'off'
 
+    // get light data
+    const light = db.get(id)
+                    .cloneDeep()
+                    .merge({ state })
+                    .value()
 
-    return true
+    return adapters(light.nodehue.adapter)[method](light)
+      .then(success => {
+        if (success === false)
+          return false
+
+        // write data to db in the end
+        db.get(id)
+          .merge({ state })
+          .write()
+
+        return true
+      })
+      .catch(() => false)
   },
 
   delete: id => {
-    if (!db.get('lights').has(id).value())
+    if (!db.has(id).value())
       return Promise.resolve(false)
 
     // get light data
-    const light = db
-          .get('lights')
-          .get(id)
-          .value()
+    const light = db.get(id).value()
 
-    // call-in for linkage
-    const adapter = adapters(light.nodehue.adapter)
-
-    return adapter
+    return adapters(light.nodehue.adapter)
       .unlink(light)
       .then(success => {
         if (success === false)
           return false
 
         // delete from db
-        db.get('lights')
-          .unset(id)
+        db.unset(id)
           .write()
 
         return true

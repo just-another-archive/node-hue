@@ -8,7 +8,7 @@ export default {
     xy: [],
     ct: 0,
     alert: 'none',
-    colormode: 'ct',
+    colormode: 'xy',
     reachable: true
   },
 

@@ -49,7 +49,18 @@ router.put('/groups/:id', (req, res) => {
 
 // action
 router.put('/groups/:id/action', (req, res) => {
-  res.json(error('TODO'))
+  const success  = groups.action(req.params.id, req.body),
+        route    = req.originalUrl.replace(req.baseUrl, '')
+
+  if (!success)
+    return res.json(error())
+
+  const response = Object.keys(req.body).reduce((object, key) => {
+    object[`${route}/${key}`] = req.body[key]
+    return object
+  }, {})
+
+  res.json([{ success: response }])
 })
 
 // delete

@@ -7,12 +7,12 @@ export default db => {
   const ntw = get_ntw()
 
   // overwrite config at runtime
-  db.set('config', model())
+  db.assign(model())
     .write()
 
   return {
     get: () => {
-      const config = db.get('config').value(),
+      const config = db.value(),
             now    = new Date(),
             utc    = new Date(
               now.getUTCFullYear(),
@@ -31,18 +31,17 @@ export default db => {
     },
 
     update: data => {
-      db.get('config')
-        .assign(data)
+      db.assign(data)
         .write()
 
       return true
     },
 
     remove: id => {
-      if (!db.get('config.whitelist').has(id).value())
+      if (!db.get('whitelist').has(id).value())
         return false
 
-      db.get('config.whitelist')
+      db.get('whitelist')
         .unset(id)
         .write()
 

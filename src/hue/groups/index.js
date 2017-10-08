@@ -1,41 +1,54 @@
 import model from './model'
 
+import { lights } from '../'
+
 const uid = db => (
-  db.get('groups').keys().length + 1
+  db.keys().length + 1
 )
 
 export default db => ({
-  get: () => db.get('groups').value(),
-  one: id => db.get('groups').get(id).value(),
+  get: () => db.value(),
+  one: id => db.get(id).value(),
 
   create: data => {
-    const id = uid()
+    const id = uid(db)
 
-    db.get('groups')
-      .set(id, Object.assign({}, model, data))
+    db.set(id, Object.assign({}, model, data))
       .write()
 
     return id
   },
 
   update: (id, data) => {
-    if (!db.get('groups').has(id).value())
+    if (!db.has(id).value())
       return false
 
-    db.get('groups')
-      .get(id)
+    db.get(id)
       .assign(data)
       .write()
 
     return true
   },
 
-  delete: id => {
-    if (!db.get('groups').has(id).value())
+  action: (id, state) => {
+    if (!db.has(id).value())
       return false
 
-    db.get('groups')
-      .unset(id)
+    const group = db.get(id).value()
+
+    // TODO: make it a sequence
+    return Promise.all(
+      group.lights.map(light_id => lights.state(light_id, state))
+    )
+
+    return true
+  },
+
+  delete: id => {
+    if (!db.has(id).value())
+      return false
+
+    db.unset(id)
       .write()
 
     return id

@@ -1,29 +1,27 @@
 import model from './model'
 
 const uid = db => (
-  db.get('rules').keys().length + 1
+  db.keys().length + 1
 )
 
 export default db => ({
-  get: () => db.get('rules').value(),
-  one: id => db.get('rules').get(id).value(),
+  get: () => db.value(),
+  one: id => db.get(id).value(),
 
   create: data => {
-    const id = uid()
+    const id = uid(db)
 
-    db.get('rules')
-      .set(id, Object.assign({}, model, data))
+    db.set(id, Object.assign({}, model, data))
       .write()
 
     return id
   },
 
   update: (id, data) => {
-    if (!db.get('rules').has(id).value())
+    if (!db.has(id).value())
       return false
 
-    db.get('rules')
-      .get(id)
+    db.get(id)
       .assign(data)
       .write()
 
@@ -31,11 +29,10 @@ export default db => ({
   },
 
   delete: id => {
-    if (!db.get('rules').has(id).value())
+    if (!db.has(id).value())
       return false
 
-    db.get('rules')
-      .unset(id)
+    db.unset(id)
       .write()
 
     return id
