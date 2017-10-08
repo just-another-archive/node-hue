@@ -50,7 +50,7 @@ The server is cut in several parts, but they talk to each other at some point.
 
 3. `src/http` is a simple webserver with multiple endpoints.
   - `src/http/upnp` only holds for ssdp based requests (such as the description file).
-  - `src/http/api` contains all the endpoints of the (Philips hue APi).[https://www.developers.meethue.com/philips-hue-api]. Any of the action will call for `src/hue` functions in the end.
+  - `src/http/api` contains all the endpoints of the [Philips hue APi](https://www.developers.meethue.com/philips-hue-api). Any of the action will call for `src/hue` functions in the end.
 
 4. `src/adapters` contains all server-to-device specifics, so the rest of the server is device agnostic.
 
