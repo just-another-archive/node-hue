@@ -2,12 +2,19 @@
 ##### disclaimer
 I'm not affiliated with Philips, nor they do backup my initiative.
 
+
+
 ### what
-A Philips hue bridge copycat with support third party devices.
-That's it.
+A Philips hue bridge copycat with support third party devices. That's it.
+It makes a cheap, yet _app-compatible_ replacement with which you can build your own bulbs/neon tubes.
+You can run it out of the box on a raspberry-pi alone, it should work just fine.
+
+
 
 ### why
-I first stumbled on [marius motea's project](https://github.com/mariusmotea/diyHue) which sounded promising. After some time I realized its goal was not what i wanted to achieve, and didn't want to steer the project away from Marius' vision. Also, it was made in python, and i knew i could do better with my node skills.
+Philips bulbs and led strips are amazingly expensive, and i wanted more of them at home without the budget. I figured out i could build some. I first stumbled on [marius motea's project](https://github.com/mariusmotea/diyHue) which sounded promising. After some time I realized its goal was not what i wanted to achieve, and didn't want to steer the project away from Marius' vision. Also, it was made in python, and i knew i could do better with my node skills.
+
+
 
 ### how
 Here's a drafted principle of how things work:
@@ -57,8 +64,9 @@ The server is cut in several parts, but they talk to each other at some point.
 
 4. `src/adapters` contains all server-to-device specifics, so the rest of the server is device agnostic.
 
-#### extending
 
+
+#### extending
 To extend to new devices:
 
 1. Code a device that advertises itself with a crafted `Server` header containing `Arduino/1.0 UPNP/1.1 {adapter_name}` and a `Chip` header containing `{type}-{unique_id}`.
