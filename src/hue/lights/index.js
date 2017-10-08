@@ -6,7 +6,7 @@ import model from './model'
 import adapters from '../../adapters'
 
 const uid = db => (
-  db.keys().length + 1
+  (db.keys().length | 0) + 1
 )
 
 export default db => ({
@@ -59,7 +59,7 @@ export default db => ({
       return false
 
     if ('xy' in state)
-      data.colormode = 'xy'
+      state.colormode = 'xy'
     else if ('ct' in state)
       state.colormode = 'ct'
     else if ('hs' in state)

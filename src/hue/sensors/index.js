@@ -4,7 +4,7 @@ import pubsub from 'pubsub-js'
 import model from './model'
 
 const uid = db => (
-  db.keys().length + 1
+  (db.keys().length | 0) + 1
 )
 
 export default db => ({

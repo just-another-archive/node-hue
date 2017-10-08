@@ -3,7 +3,7 @@ import model from './model'
 import { lights } from '../'
 
 const uid = db => (
-  db.keys().length + 1
+  (db.keys().length | 0) + 1
 )
 
 export default db => ({
