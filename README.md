@@ -66,6 +66,39 @@ The server is cut in several parts, but they talk to each other at some point.
 
 
 
+#### Roadmap
+* [x] Global architecture
+* [x] Implement lights
+* [x] Implement groups
+* [ ] Implement sensors
+  * [ ] build a sensor device
+* [ ] Implement scenes
+* [ ] Implement schedules
+* [ ] Implement rules
+* [ ] Implement resourcelinks
+* [ ] Open channels for collaborators \(chats, forums or emails\)
+* [ ] Write strategies and language agnostic documentation
+* [ ] Unit testing
+* [ ] Code samples
+* [ ] Test integration with Philips Hue app
+  * [x] lights
+  * [ ] sensors
+  * [x] groups
+  * [ ] scenes
+  * [ ] schedules
+  * [ ] rules
+  * [ ] resourcelinks
+* [ ] Test integration with Yeti Home app
+  * [ ] lights
+  * [ ] sensors
+  * [ ] groups
+  * [ ] scenes
+  * [ ] schedules
+  * [ ] rules
+  * [ ] resourcelinks
+
+
+
 #### extending
 To extend to new devices:
 
