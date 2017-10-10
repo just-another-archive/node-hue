@@ -27,11 +27,11 @@ export default db => ({
       // call-in for linkage
       adapters(data.adapter)
         .link(data)
-        .then(nodehue => {
+        .then(({ modelid, nodehue }) => {
           if (nodehue === false)
             return false
 
-          db.set(uid(db), Object.assign({}, model, { nodehue }))
+          db.set(uid(db), Object.assign({}, model, { name: data.id, modelid, nodehue }))
             .write()
 
           return true
@@ -65,17 +65,13 @@ export default db => ({
     else if ('hs' in state)
       state.colormode = 'hs'
 
-    // choose which adapter's method to call depending on properties
-    const method = !('on' in state) ? 'set'
-                 :  state.on ? 'on' : 'off'
-
     // get light data
     const light = db.get(id)
                     .cloneDeep()
                     .merge({ state })
                     .value()
 
-    return adapters(light.nodehue.adapter)[method](light)
+    return adapters(light.nodehue.adapter).set(light)
       .then(success => {
         if (success === false)
           return false

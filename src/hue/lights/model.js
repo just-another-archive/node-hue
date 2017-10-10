@@ -21,7 +21,7 @@ export default {
   type: 'Extended color light',
   uniqueid: '',
 
-  modelid: 'LCT007',
+  modelid: '',
   manufacturername: 'node-hue',
   swversion: '5.50.1.19085',
 }
