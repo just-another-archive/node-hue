@@ -1,15 +1,13 @@
+import shortid from 'shortid'
 import model from './model'
 
-const uid = db => (
-  (db.keys().length | 0) + 1
-)
 
 export default db => ({
   get: () => db.value(),
   one: id => db.get(id).value(),
 
   create: data => {
-    const id = uid(db)
+    const id = shortid.generate()
 
     db.set(id, Object.assign({}, model, data))
       .write()
@@ -23,6 +21,17 @@ export default db => ({
 
     db.get(id)
       .assign(data)
+      .write()
+
+    return true
+  },
+
+  lightstate: (id, light, data) => {
+    if (!db.has(id).value())
+      return false
+
+    db.get(id)
+      .assign({ lightstates: { [light]: data }})
       .write()
 
     return true

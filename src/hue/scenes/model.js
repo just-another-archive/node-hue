@@ -7,11 +7,6 @@ export default {
   locked: false,
   picture: '',
   lastupdated: '2012-12-21T21:12:21',
-
-  appdata: {
-    version: 1,
-    data: ''
-  },
-
+  appdata: {},
   lightstates: {}
 }
