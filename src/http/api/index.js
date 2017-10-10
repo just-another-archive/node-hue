@@ -1,4 +1,4 @@
-import CONFIG from '../../../config.json'
+import consts from '../../../config.json'
 
 import express from 'express'
 import bodyparser from 'body-parser'
@@ -28,16 +28,16 @@ app.set('view engine', 'hbs')
 app.use('/', unrestricted)
 
 // private middlewares
-app.use(`/${CONFIG.username}`, capabilities)
-app.use(`/${CONFIG.username}`, config)
-app.use(`/${CONFIG.username}`, groups)
-app.use(`/${CONFIG.username}`, lights)
-app.use(`/${config.username}`, scenes)
-app.use(`/${config.username}`, sensors)
-app.use(`/${config.username}`, resourcelinks)
-app.use(`/${config.username}`, rules)
+app.use(`/${consts.username}`, capabilities)
+app.use(`/${consts.username}`, config)
+app.use(`/${consts.username}`, groups)
+app.use(`/${consts.username}`, lights)
+app.use(`/${consts.username}`, scenes)
+app.use(`/${consts.username}`, sensors)
+app.use(`/${consts.username}`, resourcelinks)
+app.use(`/${consts.username}`, rules)
 
 // global private endpoint
-app.get(`/${CONFIG.username}`, (req, res) => res.json(db()))
+app.get(`/${consts.username}`, (req, res) => res.json(db()))
 
 export default app
