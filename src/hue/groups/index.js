@@ -1,6 +1,6 @@
 import model from './model'
 
-import { lights } from '../'
+import { lights, scenes } from '../'
 
 const uid = db => (
   (db.keys().length | 0) + 1
@@ -8,7 +8,16 @@ const uid = db => (
 
 export default db => ({
   get: () => db.value(),
-  one: id => db.get(id).value(),
+  one: id => {
+    if (id === '0')
+      return Object.assign({}, model, {
+        name: 'Group 0',
+        type: 'LightGroup',
+        lights: Object.keys(lights.get())
+      })
+
+    return db.get(id).value()
+  },
 
   create: data => {
     const id = uid(db)
@@ -31,17 +40,21 @@ export default db => ({
   },
 
   action: (id, state) => {
-    if (!db.has(id).value())
+    if (id !== '0' && !db.has(id).value())
       return false
 
-    const group = db.get(id).value()
+    const group = id !== '0'
+                ? db.get(id).value().lights
+                : Object.keys(lights.get())
+
+    const states = ('scene' in state)
+                 ? scenes.one(state.scene).lightstates
+                 : group.reduce((object, key) => { object[key] = state; return object }, {})
 
     // TODO: make it a sequence
     return Promise.all(
-      group.lights.map(light_id => lights.state(light_id, state))
+      group.map(light_id => lights.state(light_id, states[light_id]))
     )
-
-    return true
   },
 
   delete: id => {
