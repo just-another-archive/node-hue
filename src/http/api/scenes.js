@@ -8,7 +8,6 @@ import { scenes } from '../../hue'
 const router = express(),
       error  = (message = null) => [{ error: message }]
 
-
 router.use(bodyparser.urlencoded({ extended: true }))
 router.use(bodyparser.json())
 
@@ -36,6 +35,22 @@ router.post('/scenes', (req, res) => {
 // update
 router.put('/scenes/:id', (req, res) => {
   const success  = scenes.update(req.params.id, req.body),
+        route    = req.originalUrl.replace(req.baseUrl, '')
+
+  if (!success)
+    return res.json(error())
+
+  const response = Object.keys(req.body).reduce((object, key) => {
+          object[`${route}/${key}`] = req.body[key]
+          return object
+        }, {})
+
+  res.json([{ success: response }])
+})
+
+// update
+router.put('/scenes/:id/lightstates/:light', (req, res) => {
+  const success  = scenes.lightstate(req.params.id, req.params.light, req.body),
         route    = req.originalUrl.replace(req.baseUrl, '')
 
   if (!success)
