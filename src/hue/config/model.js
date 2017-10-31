@@ -6,8 +6,8 @@ const ntw = get_ntw()
 export default () => ({
   name : 'Node Hue',                    // name
   datastoreversion: '63',               // data store version
-  swversion: '1707040932',              // software version
-  apiversion: '1.20.0',                 // hue api version
+  swversion: '1709131301',              // software version
+  apiversion: '1.21.0',                 // hue api version
   mac: ntw.mac,                         // mac address
   bridgeid: ntw.mac.replace(/:/g, ''),  // bridge uid
   factorynew: false,
